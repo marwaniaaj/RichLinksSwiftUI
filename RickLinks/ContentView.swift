@@ -8,30 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var links = [
+        "https://not-valid-url", // --> Invalid URL
+        "https://developer.apple.com/tutorials/swiftui/", // --> Valid URL
+        "https://expatexplore.com/blog/when-to-travel-weather-seasons/", // --> URL that does not contain image
+    ]
+
+    @State private var useCustomPreview = true
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                HStack {
-                    Image(systemName: "globe")
-                        .imageScale(.large)
-                        .foregroundStyle(.tint)
-                    Text("Hello, world!")
+                ForEach(links, id:\.self) { link in
+                    if useCustomPreview {
+                        LinkItemView(link: link)
+                    }
+                    else if let url = URL(string: link) {
+                        LinkPreview(previewURL: url)
+                            .aspectRatio(contentMode: .fit)
+                            .padding(4)
+
+                    }
                 }
                 .padding()
             }
-
             .navigationTitle("Rick Links")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button {
-                        // TODO: Show AddNewLinkSheet
-                    } label: {
-                        Label("Add Link", systemImage: "plus")
-                    }
-                }
-            }
         }
     }
 }
